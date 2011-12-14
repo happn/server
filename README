@@ -1,0 +1,8 @@
+install node.js
+https://github.com/joyent/node/wiki/Installation
+
+install npm
+curl http://npmjs.org/install.sh | sh
+
+install deps
+npm install express cradle sax
