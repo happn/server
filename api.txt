@@ -1,0 +1,64 @@
+{user_id} [1000 - ∞] 
+	{menu} [a,b]
+	{Datum} 6122011
+
+
+GET /v1/showDay/{Datum}
+
+	=> {
+		date : {Datum},
+		data : {
+			menu_a : {
+				title : "Spaghettii",
+				votes_down : 1234,
+				votes_up : 12334,
+				picture : null
+			},
+
+			menu_b : {
+				title : "spaggrhe",
+				votes_down : 12334,
+				votes_up : 12234,
+				picture : null
+			}		
+		}
+
+	}
+
+	GET /v1/showWeek
+
+	=> {
+		'montag' : {},
+		'dienstag' : {},
+		''
+
+	}
+
+
+	}
+
+
+
+/v1/vote/{Datum}?user=1&menu=b&vote=up
+
+POST /v1/vote/{Datum}?user={user_id}&menu= {menu}&vote={up, down}
+
+	=> {
+		date : {Datum},
+		data : {
+			success : [true, false],
+			menu_a : {
+				title : "Spaghettii",
+				votes_down : 1234,
+				votes_up : 12334,
+				picture : null
+			},
+
+			menu_b : {
+				title : "spaggrhe",
+				votes_down : 12334,
+				votes_up : 12234,
+				picture : null
+			}
+		}
+	}
