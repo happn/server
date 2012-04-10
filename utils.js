@@ -1,3 +1,5 @@
+var iconv = new (require("iconv").Iconv)('UTF-8', 'ISO-8859-1');
+
 var utils = {
     getWeekDays : function (date) {        
         var weekdays = [],
@@ -77,8 +79,21 @@ var utils = {
         html = html.replace(/\#/,'' ); //leading #
         html = html.replace(/\#/g, '<br />'); // # with <br />
 
-        return html;
+        return iconv.convert(html).toString('UTF-8');
+    },
+    schwuchtify : function (date){
+        //ensure string
+        var out = this.eightDigits(date),
+        parts = [];
+
+        parts.push(out.substring(2,4));
+        parts.push( out.substring(0,2));
+        parts.push(out.substring(4,8));
+        
+        return parts.join("/");
+
     }
+
 };
 
 module.exports = utils;

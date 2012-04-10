@@ -36,8 +36,8 @@ app.start = function(){
   		
   	api.routes = {
 		'/v1/vote/:date' : ["get", app.methods.vote],
-		'/v1/showDay/:date' : ["get", app.methods.showDay],
-		'/v1/showWeek/:date' : ["get", app.methods.showWeek]
+		'/v1/day/:date' : ["get", app.methods.showDay],
+		'/v1/week/:date' : ["get", app.methods.showWeek]
 	};
 
   	this.bindApi();

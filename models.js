@@ -1,6 +1,5 @@
 var http = require("http"),
 	sax = require("sax"),
-	iconv = new (require("iconv").Iconv)('UTF-8', 'ISO-8859-1'),
 	db = app.db;
 
 
@@ -15,7 +14,7 @@ module.exports ={
 		    port : app.config.rssFetchPort,
 		  }, function(res){
 
-		  	res.setEncoding('utf8');
+		  	res.setEncoding('utf-8');
 		  	res.on('data', function(chunk){
 		  		body += chunk;
 		  	}).on('end',function(){
@@ -91,7 +90,6 @@ module.exports ={
 			} else {
 				cb.call(cb, true, null);
 			}
-			
 			that.insertInDb(parsed);						
 		};
 
@@ -170,9 +168,7 @@ module.exports ={
 						picture : doc.menu_b.picture
 					},
 				};
-			}
-
-			
+			}			
 			
 			fn.call(this, data, doc);
 		});

@@ -1,64 +1,113 @@
-{user_id} [1000 - ∞] 
-	{menu} [a,b]
-	{Datum} 6122011
+GET /v1/day/{Datum}
 
-
-GET /v1/showDay/{Datum}
+Example /v1/day/12042012
 
 	=> {
-		date : {Datum},
-		data : {
-			menu_a : {
-				title : "Spaghettii",
-				votes_down : 1234,
-				votes_up : 12334,
-				picture : null
-			},
-
-			menu_b : {
-				title : "spaggrhe",
-				votes_down : 12334,
-				votes_up : 12234,
-				picture : null
-			}		
-		}
-
+	  "apiVersion": 1,
+	  "success": true,
+	  "date": "04/12/2012",
+	  "menu_a": {
+	    "title": " Tagessuppe<br /><b>Putengeschnetzeltes</b><br />mit Paprika-Rahm-Sauce<br />Bauernspï¿½tzle<br />Mixsalat<br /> <br /> ",
+	    "up_votes": 0,
+	    "down_votes": 0,
+	    "picture": ""
+	  },
+	  "menu_b": {
+	    "title": " Tagessuppe<br /><b>Brokkoli-Nuss-Ecke</b><br />mit Estragonsauce (2)<br />Langkornreis<br />Mixsalat<br /><br /> ",
+	    "up_votes": 0,
+	    "down_votes": 0,
+	    "picture": ""
+	  }
 	}
 
-	GET /v1/showWeek
+GET /v1/week/12042012
 
 	=> {
-		'montag' : {},
-		'dienstag' : {},
-		''
-
+	  "success": true,
+	  "apiVersion": 1,
+	  "04/13/2012": {
+	    "menu_a": {
+	      "title": " Tagessuppe<br /><b>Alaska Seelachsfilet paniert</b> (MSC)<br />mit Tatarensauce<br />Butterkartoffeln<br />Rote-Bete-Salat<br />Dessert<br /> <br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    },
+	    "menu_b": {
+	      "title": " Tagessuppe<br /><b>Vegetarische Lasagne</b><br />Rote-Bete-Salat<br />Dessert<br /><br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    }
+	  },
+	  "04/12/2012": {
+	    "menu_a": {
+	      "title": " Tagessuppe<br /><b>Putengeschnetzeltes</b><br />mit Paprika-Rahm-Sauce<br />Bauernspï¿½tzle<br />Mixsalat<br /> <br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    },
+	    "menu_b": {
+	      "title": " Tagessuppe<br /><b>Brokkoli-Nuss-Ecke</b><br />mit Estragonsauce (2)<br />Langkornreis<br />Mixsalat<br /><br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    }
+	  },
+	  "04/11/2012": {
+	    "menu_a": {
+	      "title": " Tagessuppe<br /><b>Schupfnudelpfanne mit Sauerkraut und Speck</b> (1)<br />Bratensauce<br />Blattsalat<br />Dessert<br /> <br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    },
+	    "menu_b": {
+	      "title": " Tagessuppe<br /><b>Bunte Tortellini mit fleischloser Fï¿½llung</b><br />Tomaten-Sahne-Sauce<br />Geriebener Kï¿½se<br />Blattsalat<br />Dessert<br /><br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    }
+	  },
+	  "04/10/2012": {
+	    "menu_a": {
+	      "title": " kein Angebot <br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    },
+	    "menu_b": {
+	      "title": " kein Angebot<br /> ",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    }
+	  },
+	  "04/15/2012": {
+	    "menu_a": {
+	      "title": "Kein Angebot",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    },
+	    "menu_b": {
+	      "title": "Kein Angebot",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    }
+	  },
+	  "04/14/2012": {
+	    "menu_a": {
+	      "title": "Kein Angebot",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    },
+	    "menu_b": {
+	      "title": "Kein Angebot",
+	      "up_votes": 0,
+	      "down_votes": 0,
+	      "picture": ""
+	    }
+	  }
 	}
 
-
-	}
-
-
-
-/v1/vote/{Datum}?user=1&menu=b&vote=up
-
-POST /v1/vote/{Datum}?user={user_id}&menu= {menu}&vote={up, down}
-
-	=> {
-		date : {Datum},
-		data : {
-			success : [true, false],
-			menu_a : {
-				title : "Spaghettii",
-				votes_down : 1234,
-				votes_up : 12334,
-				picture : null
-			},
-
-			menu_b : {
-				title : "spaggrhe",
-				votes_down : 12334,
-				votes_up : 12234,
-				picture : null
-			}
-		}
-	}

@@ -38,7 +38,7 @@ module.exports = {
 			});
 
 			responseData = {
-				date : date,
+				date : app.utils.schwuchtify(date),
 				data : {
 					menu_a : {
 						title : doc.menu_a.title,
@@ -67,9 +67,17 @@ module.exports = {
 		var responseData = {},
 			date = app.utils.validateDate(req.params.date);
 		
+			responseData.apiVersion = 1;
+			responseData.success = true;
+			responseData.date = app.utils.schwuchtify(date);
+
+
 		if(date){
 			model.fetchDay(date.toString(), function(data){
-				res.end(JSON.stringify(data));
+				responseData.menu_a = data.menu_a; 
+				responseData.menu_b = data.menu_b;
+
+				res.end(JSON.stringify(responseData));
 			});
 		}
 	},
@@ -84,10 +92,13 @@ module.exports = {
 				fetching = false,
 				db = this.db;
 
+				responseData.success = true;
+				responseData.apiVersion = 1;
+			
 			for(var day = days.length-1; day > 0; day--){
 				
 				model.fetchDay(days[day], function(data, doc){
-					responseData[doc._id] = data;
+					responseData[app.utils.schwuchtify(doc._id)] = data;
 					checkAsync();
 				});
 			}
