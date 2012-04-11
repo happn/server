@@ -52,8 +52,6 @@ module.exports = {
 						down_votes : doc.menu_b.down_votes.length ,
 						picture : doc.menu_b.picture
 					},
-
-
 				}
 			};
 
@@ -64,20 +62,19 @@ module.exports = {
 	},
 
 	showDay : function(req, res){
-		var responseData = {},
+		var responseData = [],
 			date = app.utils.validateDate(req.params.date);
-		
-			responseData.apiVersion = 1;
-			responseData.success = true;
-			responseData.date = app.utils.schwuchtify(date);
-
 
 		if(date){
 			model.fetchDay(date.toString(), function(data){
-				responseData.menu_a = data.menu_a; 
-				responseData.menu_b = data.menu_b;
+				data.date = app.utils.schwuchtify(date);
+				responseData.push(data);
 
-				res.end(JSON.stringify(responseData));
+				res.end(JSON.stringify({
+					success : 1,
+					version : 1,
+					data : responseData
+				}));
 			});
 		}
 	},
@@ -87,25 +84,27 @@ module.exports = {
 		if(req.params.date){			
 			var days = this.utils.getWeekDays(req.params.date),
 				date = req.params.date,
-				responseData = {},
+				responseData = [],
 				asycCount = days.length-1,
 				fetching = false,
 				db = this.db;
-
-				responseData.success = true;
-				responseData.apiVersion = 1;
 			
 			for(var day = days.length-1; day > 0; day--){
 				
 				model.fetchDay(days[day], function(data, doc){
-					responseData[app.utils.schwuchtify(doc._id)] = data;
+					data.date = app.utils.schwuchtify(doc._id);
+					responseData.push(data);
 					checkAsync();
 				});
 			}
 
 			function checkAsync(){
 				if((asycCount -1) === 0){
-					res.end(JSON.stringify( responseData));
+					res.end(JSON.stringify({
+						success : true,
+						version : 1,
+						data : responseData
+					}));
 				} else {
 					asycCount--;
 				}
