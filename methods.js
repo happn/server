@@ -1,4 +1,5 @@
 var model = require(__dirname + "/models.js"),
+	_ = require("underscore"),
 	db = app.db;
 
 module.exports = {
@@ -92,7 +93,7 @@ module.exports = {
 			for(var day = days.length-1; day > 0; day--){
 				
 				model.fetchDay(days[day], function(data, doc){
-					data.date = app.utils.schwuchtify(doc._id);
+					data.date = doc._id;
 					responseData.push(data);
 					checkAsync();
 				});
@@ -100,6 +101,14 @@ module.exports = {
 
 			function checkAsync(){
 				if((asycCount -1) === 0){
+					responseData = _.sortBy(responseData, function(a){
+						return parseFloat(a.date);
+					});
+
+					_.each(responseData, function(arr, i){
+						responseData[i].date = app.utils.schwuchtify(responseData[i].date)
+					});
+
 					res.end(JSON.stringify({
 						success : true,
 						version : 1,
