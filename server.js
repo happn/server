@@ -11,6 +11,7 @@ var config = {
 	dbUrl : 'localhost',
 	dbPort : 5984,
 	dBase : 'hfuapp',
+	serverAdress : "http://78.46.19.228",
 	httpServerPort : 8010,
 	rssFetchUrl : 'www.studentenwerk.uni-freiburg.de',
 	rssFetchQuery : '/index.php?id=855&no_cache=1&L=&Tag=0&Ort_ID=641',
@@ -37,7 +38,8 @@ app.start = function(){
   	api.routes = {
 		'/v1/vote/:date' : ["get", app.methods.vote],
 		'/v1/day/:date' : ["get", app.methods.showDay],
-		'/v1/week/:date' : ["get", app.methods.showWeek]
+		'/v1/week/:date' : ["get", app.methods.showWeek],
+		'/v1/picture'	: ["put", app.methods.pictureUpload]
 	};
 
   	this.bindApi();
@@ -62,8 +64,9 @@ app.bindApi = function(){
 		
 		(function(action , path, server){
 			server[action[0]](path, function(request, response){
-				console.log("request", path, action);
-				response.contentType('application/json');
+				console.log("request method: "+action[0], path);
+				
+				response.setHeader('content-type', 'application/json');
 				return action[1].call(that, request, response);
 			});
 		})(action, path, this.httpServer);		

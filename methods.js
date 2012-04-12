@@ -1,6 +1,8 @@
 var model = require(__dirname + "/models.js"),
 	_ = require("underscore"),
-	db = app.db;
+	formidable = require('formidable'),
+	db = app.db,
+	fs = require('fs');
 
 module.exports = {
 	vote : function(req, res){
@@ -119,5 +121,55 @@ module.exports = {
 				}
 			}
 		}
+	},
+
+	pictureUpload : function(req, res){
+		 var form = new formidable.IncomingForm(),
+	        files = [],
+	        fields = [];
+
+	    form.uploadDir = __dirname + "/images";
+
+	    form
+	      .on('field', function(field, value) {
+	        fields.push([field, value]);
+	      })
+	      .on('file', function(field, file) {
+	        files.push([field, file]);
+	      })
+	      .on('end', function() {
+	      	var path = files[0][1].path,
+	      		menu = files[0][0];
+	        
+	        res.end(JSON.stringify({
+	        	version : 1,
+	        	success : true
+	        }));
+
+	        fs.readFile(path, function (err, file) {
+			  var now = app.utils.nowString();
+			  if (err) 
+			  	return console.log(err);
+
+			  model.exists(now, function(exists, d, s){
+			  	if(exists && d[menu].picture === ""){
+			  		db.saveAttachment(now, {
+			  			name : menu ,
+			  			contentType : 'image/png',
+			  			body : file
+			  		}, function(err){
+			  			if(err) console.warn(err);
+			  			fs.unlink(path);
+			  		});
+			  	}
+			  })
+
+			});
+
+
+	      });
+	    form.parse(req);
 	}
 };
+
+

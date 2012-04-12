@@ -92,6 +92,11 @@ var utils = {
         
         return parts.join("/");
 
+    },
+
+    nowString : function(){
+        var n = new Date();
+        return  this.twoDigits(n.getDate())+ this.twoDigits(n.getMonth()+1) + n.getFullYear();
     }
 
 };
