@@ -92,7 +92,7 @@ module.exports = {
 				fetching = false,
 				db = this.db;
 			
-			for(var day = days.length-1; day > 0; day--){
+			for(var day = days.length-1; day >= 0; day--){
 				
 				model.fetchDay(days[day], function(data, doc){
 					data.date = doc._id;
@@ -102,7 +102,7 @@ module.exports = {
 			}
 
 			function checkAsync(){
-				if((asycCount -1) === 0){
+				if((asycCount -1) === -1){
 					responseData = _.sortBy(responseData, function(a){
 						return parseFloat(a.date);
 					});
