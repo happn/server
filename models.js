@@ -155,6 +155,7 @@ module.exports ={
 				};
 				//that.reFetchSource.call(that, date, fn)
 			} else {
+
 				data = {
 					menu_a : {
 						title : app.utils.parseHTML( doc.menu_a.title ),

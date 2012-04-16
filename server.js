@@ -12,6 +12,7 @@ var config = {
 	dbUrl : 'localhost',
 	dbPort : 5984,
 	dBase : 'hfuapp',
+	serverAdress : "http://78.46.19.228",
 	httpServerPort : 8010,
 	rssFetchUrl : 'www.studentenwerk.uni-freiburg.de',
 	rssFetchQuery : '/index.php?id=855&no_cache=1&L=&Tag=0&Ort_ID=641',

@@ -86,15 +86,13 @@ module.exports = {
 						down_votes : doc.menu_b.down_votes.length ,
 						picture : doc.menu_b.picture
 					},
-
-
 				}
 			};
 
-			res.end(JSON.stringify(responseData));
+			request.write(responseData);
+			request.end();
 		});
 	},
-
 	showDay : function(request){
 		var date = app.utils.validateDate(request.params.date);
 		
@@ -140,5 +138,9 @@ module.exports = {
 				asycCount--;
 			}
 		}
-	}
+
+	},
+	
 };
+
+
