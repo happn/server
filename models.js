@@ -129,6 +129,7 @@ module.exports ={
 
 	fetchDay : function(date, fn){
 		var that = this,
+			imagePath =  app.config.serverAdress +":"+ app.config.dbPort + "/" + app.config.dBase + "/" + date + "/",
 			data;
 
 		this.exists(date, function(exists, doc){
@@ -152,25 +153,25 @@ module.exports ={
 				doc = {
 					_id : date
 				};
-				that.reFetchSource.call(that, date, fn)
+				//that.reFetchSource.call(that, date, fn)
 			} else {
 				data = {
 					menu_a : {
 						title : app.utils.parseHTML( doc.menu_a.title ),
 						up_votes : doc.menu_a.up_votes.length ,
 						down_votes : doc.menu_a.down_votes.length ,
-						picture : doc.menu_a.picture
+                        picture : doc._attachments && doc._attachments.menu_a ? imagePath +"menu_a" : ""
 					},
 					menu_b : {
 						title : app.utils.parseHTML( doc.menu_b.title ),
 						up_votes : doc.menu_b.up_votes.length ,
 						down_votes : doc.menu_b.down_votes.length ,
-						picture : doc.menu_b.picture
+                        picture : doc._attachments && doc._attachments.menu_b ? imagePath +"menu_b" : ""
 					},
 				};
 			}			
 			
-			fn.call(this, data, doc);
+			return fn.call(this, data, doc);
 		});
 	},
 
@@ -214,9 +215,18 @@ module.exports ={
 
 	exists : function(key, cb, /* opt */ ctx){
 		db.get(key, function(err, doc){
-			if(err && err.error === "not_found"){
-				cb.call(ctx || this, false, err )
-			} else {
+			if(err){
+				if(err.error === "not_found"){
+					cb.call(ctx || this, false, err )
+				}
+				else if(err.code === 'ECONNREFUSED' ){
+					console.warn("NO DB CONNECTION");
+					cb.call(ctx || this, false, err )
+				}
+				else /* TODO error Handling */
+					cb.call(ctx || this, false, err )
+			}
+			 else {
 				cb.call(ctx || this, true, doc);
 			}
 		});
