@@ -15,7 +15,9 @@ var config = {
 	httpServerPort : 8010,
 	rssFetchUrl : 'www.studentenwerk.uni-freiburg.de',
 	rssFetchQuery : '/index.php?id=855&no_cache=1&L=&Tag=0&Ort_ID=641',
-	rssFetchPort : 80
+	rssFetchPort : 80,
+	user : 'hfuclient',
+	passphrase : '9204030321b3dfd8fa0dd4e0d28ed746'
 };
 
 
@@ -23,6 +25,7 @@ app.start = function(){
 	this.config = config;
 	this.utils = utils;
 	this.httpServer = express.createServer();
+	this.auth = express.basicAuth(config.user, config.passphrase);
 	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, {
       cache: true,
       raw: false
@@ -63,7 +66,7 @@ app.bindApi = function(){
 		var action = api.routes[path];
 		
 		(function(action , path, server){
-			server[action[0]](path, function(request, response){
+			server[action[0]](path, that.auth, function(request, response){
 				console.log("request method: "+action[0], path);
 				
 				response.setHeader('content-type', 'application/json');
