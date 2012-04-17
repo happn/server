@@ -7,6 +7,8 @@ function Request(request, response, options){
 	this.request = request;
 	this.response = response;
 	this.responseData = [];
+	this.isJsonP = request.query && request.query.callback;
+
 	this.query = request.query;
 	this.params = request.params;
 	this.options = _.extend({
@@ -21,7 +23,12 @@ Request.prototype.setHeaders = function(){
 
 
 Request.prototype.end = function(){
-	this.response.end(JSON.stringify(this._wrap()));
+	if(this.isJsonP){
+		this.response.end(this.query.callback + "(" + JSON.stringify(this._wrap()) + ");");
+	} else {
+		this.response.end(JSON.stringify(this._wrap()));
+	}
+
 	this.open = false;
 };
 

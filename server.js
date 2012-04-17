@@ -123,7 +123,7 @@ app.bindApi = function(){
 		var action = api.routes[path];
 		
 		(function(action , path, server){
-			server[action[0]](path, that.auth, function(request, response){
+			server[action[0]](path, /*that.auth,*/ function(request, response){
 				var r = new RestRequest(request, response),
 					isValidRequest = app.validateRequest(action, path, r);
 				
