@@ -32,7 +32,6 @@ app.start = function(){
 
 	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, {
       cache: true,
-      raw: false
   	});
 
   	//select db

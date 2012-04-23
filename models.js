@@ -1,12 +1,16 @@
+
 var http = require("http"),
 	sax = require("sax"),
+	Iconv = require('iconv').Iconv,
 	db = app.db;
 
 
 module.exports ={
 	fetchSource : function(date, cb){
-		var body = "",
-			that = this;
+		var that = this;
+
+		var bufferSize = 0;
+		var chunks = [];
 
 		http.get({
 		    host: app.config.rssFetchUrl,
@@ -14,11 +18,26 @@ module.exports ={
 		    port : app.config.rssFetchPort,
 		  }, function(res){
 
-		  	res.setEncoding('utf-8');
+			res.setEncoding('binary');
 		  	res.on('data', function(chunk){
-		  		body += chunk;
+		  		chunks.push(chunk);
+				bufferSize += chunk.length;
+
 		  	}).on('end',function(){
-		  		that.parse(body, date, cb);
+		  		var buffer = new Buffer(bufferSize),
+					offset = 0;
+				
+				chunks.forEach(function(value){
+					offset += buffer.write(value, offset, 'binary');
+				});
+						
+				//var iconv = new Iconv('ISO-8859-1', 'UTF-8');
+				//console.log(iconv.convert(buffer).toString('UTF-8'));
+
+
+
+				buffer = buffer.toString("UTF-8");
+		  		that.parse(buffer, date, cb);
 		  	});
 		  	
 		  }).on('error', function(err){
@@ -133,6 +152,7 @@ module.exports ={
 			data;
 
 		this.exists(date, function(exists, doc){
+			console.log(doc);
 			
 			if(!exists){
 				data = {
@@ -153,7 +173,7 @@ module.exports ={
 				doc = {
 					_id : date
 				};
-				//that.reFetchSource.call(that, date, fn)
+				that.reFetchSource.call(that, date, fn)
 			} else {
 
 				data = {
@@ -171,7 +191,7 @@ module.exports ={
 					},
 				};
 			}			
-			
+			console.log(data);
 			return fn.call(this, data, doc);
 		});
 	},
@@ -228,6 +248,7 @@ module.exports ={
 					cb.call(ctx || this, false, err )
 			}
 			 else {
+
 				cb.call(ctx || this, true, doc);
 			}
 		});

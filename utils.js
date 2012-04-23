@@ -1,4 +1,4 @@
-var iconv = new (require("iconv").Iconv)('UTF-8', 'ISO-8859-1');
+
 
 var utils = {
     getWeekDays : function (date) {        
@@ -79,7 +79,7 @@ var utils = {
         html = html.replace(/\#/,'' ); //leading #
         html = html.replace(/\#/g, '<br />'); // # with <br />
 
-        return iconv.convert(html).toString('UTF-8');
+        return html;
     },
     schwuchtify : function (date){
         //ensure string
