@@ -153,7 +153,7 @@ module.exports ={
 				doc = {
 					_id : date
 				};
-				//that.reFetchSource.call(that, date, fn)
+				that.reFetchSource.call(that, date, fn)
 			} else {
 
 				data = {
