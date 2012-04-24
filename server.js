@@ -31,7 +31,7 @@ app.start = function(){
 	this.httpServer.use(express.bodyParser());
 
 	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, {
-      cache: true,
+      cache: false
   	});
 
   	//select db
@@ -46,7 +46,7 @@ app.start = function(){
 		'/v1/vote/:date' : ["get", app.methods.vote],
 		'/v1/day/:date' : ["get", app.methods.showDay],
 		'/v1/week/:date' : ["get", app.methods.showWeek],
-		'/v1/upload' :['put', app.methods.uploadImage]
+		'/v1/picture' :['put', app.methods.uploadImage]
 	};
 
 	api.fields = {
@@ -123,6 +123,7 @@ app.bindApi = function(){
 		
 		(function(action , path, server){
 			server[action[0]](path, /*that.auth,*/ function(request, response){
+				console.log(action[0], path);
 				var r = new RestRequest(request, response),
 					isValidRequest = app.validateRequest(action, path, r);
 				
