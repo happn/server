@@ -18,7 +18,7 @@ function Request(request, response, options){
 }
 
 Request.prototype.setHeaders = function(){
-	this.response.writeHead(200, {'Content-Type': this.options.contentType + '; charset=utf-8'});
+	this.response.setHeader('Content-Type', this.options.contentType + '; charset=utf-8');
 };
 
 
