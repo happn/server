@@ -46,7 +46,7 @@ app.start = function(){
 		'/v1/vote/:date' : ["get", app.methods.vote],
 		'/v1/day/:date' : ["get", app.methods.showDay],
 		'/v1/week/:date' : ["get", app.methods.showWeek],
-		'/v1/picture' :['put', app.methods.uploadImage]
+		'/v1/picture' :['put', app.methods.pictureUpload]
 	};
 
 	api.fields = {
