@@ -12,6 +12,8 @@ var config = {
 	dbUrl : 'localhost',
 	dbPort : 5984,
 	dBase : 'hfuapp',
+	dbUser : 'admin',
+	dbpassword : '6W2epzXrXN',
 	serverAdress : "http://78.46.19.228",
 	httpServerPort : 8010,
 	rssFetchUrl : 'www.studentenwerk.uni-freiburg.de',
@@ -19,7 +21,7 @@ var config = {
 	rssFetchPort : 80,
 	serverAdress : "http://78.46.19.228",
 	user : 'hfuclient',
-	passphrase : '9204030321b3dfd8fa0dd4e0d28ed746'
+	passphrase : '9204030321b3dfd8fa0dd4e0d28ed746',
 };
 
 
@@ -31,7 +33,12 @@ app.start = function(){
 	this.httpServer.use(express.bodyParser());
 
 	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, {
-      cache: false
+      cache: false,
+      secure: true,
+      auth: { 
+      	username: config.dbUser , 
+      	password: config.dbpassword 
+     }
   	});
 
   	//select db
