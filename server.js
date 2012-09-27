@@ -1,7 +1,8 @@
 
 app = {};
 
-var express = require("express"),
+var amon = require('amon').Amon,
+	express = require("express"),
   	cradle = require('cradle')
    	http = require('http'),
 	utils = require(__dirname + "/utils"),
@@ -14,27 +15,25 @@ var config = {
 	dBase : 'hfuapp',
 	dbUser : 'admin',
 	dbpassword : '6W2epzXrXN',
-	serverAdress : "http://78.46.19.228",
+	serverAdress : "http://appserver.happn.de",
 	httpServerPort : 8010,
-	rssFetchUrl : 'www.studentenwerk.uni-freiburg.de',
-	rssFetchQuery : '/index.php?id=855&no_cache=1&L=&Tag=0&Ort_ID=641',
+	rssFetchUrl : 'www.swfr.de',
+	rssFetchQuery : '/essen-trinken/speiseplaene/speiseplan-rss/?no_cache=1&Tag=2&Ort_ID=641',
 	rssFetchPort : 80,
-	serverAdress : "http://78.46.19.228",
 	user : 'hfuclient',
 	passphrase : '9204030321b3dfd8fa0dd4e0d28ed746',
 };
 
-
 app.start = function(){
 	this.config = config;
 	this.utils = utils;
+	this.log  = amon.log;
 	this.httpServer = express.createServer();
 	this.auth = express.basicAuth(config.user, config.passphrase);
 	this.httpServer.use(express.bodyParser());
 
 	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, {
       cache: false,
-      secure: true,
       auth: { 
       	username: config.dbUser , 
       	password: config.dbpassword 
@@ -50,7 +49,7 @@ app.start = function(){
   		
 
   	api.routes = {
-		'/v1/vote/:date' : ["get", app.methods.vote],
+		'/v1/vote/:date' : ["post", app.methods.vote],
 		'/v1/day/:date' : ["get", app.methods.showDay],
 		'/v1/week/:date' : ["get", app.methods.showWeek],
 		'/v1/picture' :['put', app.methods.pictureUpload]
@@ -103,12 +102,14 @@ app.validateRequest = function(action, path, request){
 
 	for ( var rule in rules ){
 		checks++;
+		var field = rules[rule].split('.');
 
-		var field = rules[rule].split('.'),
-			val = request[field[0]][field[1]];
+		var	val = request[field[0]][field[1]];
 
 		if( val && api.fieldRules[rule](val) ){
 			passed++;
+		} else {
+			app.log("Warn value:'"+val+"' is not valid for rule:'"+rule+"'", 'warn');
 		} 
 	}
 	
@@ -118,7 +119,7 @@ app.validateRequest = function(action, path, request){
 
 app.bindHttp = function(){
 	this.httpServer.listen(config.httpServerPort, function(){
-		console.log("Server listen at :" + config.httpServerPort);
+		app.log("Server listen at :" + config.httpServerPort, 'info');
 	});
 };
 
@@ -130,7 +131,8 @@ app.bindApi = function(){
 		
 		(function(action , path, server){
 			server[action[0]](path, /*that.auth,*/ function(request, response){
-				console.log(action[0], path);
+				app.log(action[0] + ":" + path, 'info');
+
 				var r = new RestRequest(request, response),
 					isValidRequest = app.validateRequest(action, path, r);
 				
@@ -138,6 +140,7 @@ app.bindApi = function(){
 					r.setHeaders();
 					return action[1].call(that, r);
 				} else {
+					app.log("Request arguments invalid", 'warn');
 					r.exitWithError("Arguments invalid");
 				}			
 			});
@@ -145,8 +148,8 @@ app.bindApi = function(){
 	}
 };
 
-/*process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err);
-});*/
+process.addListener('uncaughtException', function(err) {
+        amon.handle(err);
+});
 
 app.start();

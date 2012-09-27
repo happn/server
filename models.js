@@ -22,7 +22,7 @@ module.exports ={
 		  	});
 		  	
 		  }).on('error', function(err){
-		  	console.log("[ERROR] while Fetching RSS", err);
+		  	app.log(["[ERROR] while Fetching RSS", err], 'error');
 		});
 	},
 	
@@ -206,7 +206,7 @@ module.exports ={
 			(function(d){
 				that.exists(d, function(exists, doc){
 					!exists && db.save(d, data[d], function(err){
-						err && console.log("[ERROR] while saving to Db", err);
+						err && app.log(["[ERROR] while saving to Db", err], 'error');
 					})
 				});						
 			})(date + "");			
@@ -220,7 +220,7 @@ module.exports ={
 					cb.call(ctx || this, false, err )
 				}
 				else if(err.code === 'ECONNREFUSED' ){
-					console.warn("NO DB CONNECTION");
+					app.log("NO DB CONNECTION", 'warn');
 					cb.call(ctx || this, false, err )
 				}
 				else /* TODO error Handling */

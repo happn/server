@@ -11,6 +11,8 @@ function Request(request, response, options){
 
 	this.query = request.query;
 	this.params = request.params;
+	this.body = request.body;
+	
 	this.options = _.extend({
 		contentType : 'application/json',
 		version : 1
