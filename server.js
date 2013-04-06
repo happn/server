@@ -31,6 +31,13 @@ app.start = function(){
 	this.httpServer = express.createServer();
 	this.auth = express.basicAuth(config.user, config.passphrase);
 	this.httpServer.use(express.bodyParser());
+	
+	//enable cross domain
+	this.httpServer.use(function(req, res, next) {
+  		res.header("Access-Control-Allow-Origin", "*");
+  		res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  		next();
+ 	});
 
 	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, {
       cache: false,
