@@ -1,0 +1,22 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "author": "Sebastian <sotto@wemakeweb.de>",
+  "description": "Happn Server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/happn/server.git"
+  },
+  "dependencies": {
+    "underscore": "*",
+    "express": "*",
+    "cradle": "~0.6.4",
+    "sax": "*",
+    "iconv": "*",
+    "amon" : "*",
+    "mongodb" : ""
+  },
+  "engines": {
+    "node": ">=0.8"
+  }
+}

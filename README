@@ -1,2 +1,4 @@
-install deps
-npm install express cradle sax iconv underscore
+#happn Server
+```sh
+npm install
+```

@@ -1,4 +1,3 @@
-
 app = {};
 
 var amon = require('amon').Amon,
@@ -7,28 +6,15 @@ var amon = require('amon').Amon,
    	http = require('http'),
 	utils = require(__dirname + "/utils"),
 	RestRequest = require(__dirname + "/Request");
+	config = require('./config.js'),
 	api = {};
 
-var config = {
-	dbUrl : 'localhost',
-	dbPort : 5984,
-	dBase : 'hfuapp',
-	dbUser : 'admin',
-	dbpassword : '6W2epzXrXN',
-	serverAdress : "http://appserver.happn.de",
-	httpServerPort : 8010,
-	rssFetchUrl : 'www.swfr.de',
-	rssFetchQuery : '/essen-trinken/speiseplaene/speiseplan-rss/?no_cache=1&Tag=2&Ort_ID=641',
-	rssFetchPort : 80,
-	user : 'hfuclient',
-	passphrase : '9204030321b3dfd8fa0dd4e0d28ed746',
-};
 
 app.start = function(){
 	this.config = config;
 	this.utils = utils;
-	this.log  = amon.log;
-	this.httpServer = express.createServer();
+	this.log  = console.log;
+	this.httpServer = express();
 	this.auth = express.basicAuth(config.user, config.passphrase);
 	this.httpServer.use(express.bodyParser());
 	
