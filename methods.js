@@ -5,32 +5,43 @@ var model = require(__dirname + "/models.js"),
 
 module.exports = {
 	pictureUpload : function(request){
-		var files = request.request.files;
+		var files = request.request.files,
+			user = request.body.user;
+
 		
 		if(files){
 			for(var file in files ){
 				var path = files[file].path;
 
 				fs.readFile(path, function (err, img) {
-				  var now = app.utils.nowString();
+					var now = app.utils.nowString(),
+				  		fileName = Date.now(); 
 				  
 				  if (err) 
 				  	return app.log(['[pictureUpload] ReadFile Error during FileUpload ', err], 'error');
 
 
 				  model.exists(now, function(exists, d){
-
-				  	if(exists && d[file].picture === ""){
+				  	
+				  	if(exists){
 				  		db.saveAttachment({
 				  			id: d._id, 
                             rev: d._rev
 				  		}, {
-				  			name : file,
+				  			name : fileName + file,
 				  			contentType : 'image/jpg',
 				  			body : img
-				  		}, function(err){
+				  		}, function(err, doc){
 				  			if(err) app.log(['[pictureUpload] Attachment Save Error', err], 'error');
 				  			fs.unlink(path);
+
+				  			doc[file].pictures.uploads.push({
+				  				user : user,
+				  				karma : 0,
+				  				file : fileName + file
+				  			});
+
+				  			db.save(doc._id, doc._rev, doc);
 				  		});
 
 
@@ -38,6 +49,8 @@ module.exports = {
 				  		app.log("[pictureUpload] Image Exists", 'warn');
 				  	}
 				  })
+
+
 				});
 			}
 		}
@@ -66,11 +79,10 @@ module.exports = {
 			db.save(date, doc, function(err){
 				if(err) app.log(["while saving votes", err], 'error');
 				self.methods.showDay(request);
-			});
-
-			
+			});	
 		});
 	},
+
 	showDay : function(request){
 		var date = app.utils.validateDate(request.params.date);
 		
@@ -116,11 +128,26 @@ module.exports = {
 				asycCount--;
 			}
 		}
-
-	},
-	
+	}
 };
 
+var fetcher = {
+	run : function(){
+		var now = app.utils.getWeekDays(app.utils.nowString()),
+			next = new Date();
 
+		app.log("Fetcher start", "info");
+		
+		model.fetchSource(now[0], function(err){
+			app.log("Fetcher ended error:" + err , "info")
+		});
 
+		next.setHours(7);
 
+		setTimeout(function(){
+			fetcher.run();
+		}, next.getTime() - Date.now());
+	}
+};
+
+fetcher.run();

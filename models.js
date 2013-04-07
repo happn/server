@@ -66,14 +66,20 @@ module.exports ={
 							title : menu[2],
 							up_votes : [],
 							down_votes : [],
-							picture : ""
+							pictures : {
+								uploads : [],
+								approved : null
+							}
 						},
 
 						menu_b : {
 							title : menu[1],
 							up_votes : [],
 							down_votes : [],
-							picture : ""
+							pictures : {
+								uploads : [],
+								approved : null
+							}
 						},
 
 						additive : additive,
@@ -96,36 +102,6 @@ module.exports ={
 		parser.write( this.clean(data) ).close();			
 	},
 
-	reFetchSource : function(date, fn){
-		var data;
-
-		this.fetchSource(date, function(err, result, doc){
-			if(err){
-				data = {
-						"menu_a": {
-							"title":"Keine Informationen",
-							"up_votes":0,
-							"down_votes":0,
-							"picture":""
-						},
-						"menu_b":{
-							"title":"Keine Informationen",
-							"up_votes":0,
-							"down_votes":0,
-							"picture":""
-						}
-					};
-
-				doc = {
-					_id : date
-				};
-
-			} else {							
-				data = result;
-			}
-			fn.call(this, data, doc);
-		});
-	},
 
 	fetchDay : function(date, fn){
 		var that = this,
@@ -153,26 +129,33 @@ module.exports ={
 				doc = {
 					_id : date
 				};
-				that.reFetchSource.call(that, date, fn)
 			} else {
 				data = {
 					menu_a : {
 						title : app.utils.parseHTML( doc.menu_a.title ),
 						up_votes : doc.menu_a.up_votes.length ,
 						down_votes : doc.menu_a.down_votes.length ,
-                        picture : doc._attachments && doc._attachments.menu_a ? imagePath +"menu_a" : ""
+                        picture : that.getPicture(doc, "a")
 					},
 					menu_b : {
 						title : app.utils.parseHTML( doc.menu_b.title ),
 						up_votes : doc.menu_b.up_votes.length ,
 						down_votes : doc.menu_b.down_votes.length ,
-                        picture : doc._attachments && doc._attachments.menu_b ? imagePath +"menu_b" : ""
+                        picture : that.getPicture(doc, "b")
 					},
 				};
-			}			
+			}
 			
 			return fn.call(this, data, doc);
 		});
+	},
+
+	getPicture : function(doc, menu){
+		if(!doc._attachments || !doc[menu].approved){
+			return "";
+		} 
+
+		return imagePath + doc[menu].approved;	
 	},
 
 	clean : function(data){

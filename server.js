@@ -1,3 +1,5 @@
+process.title = "HappnServer";
+
 app = {};
 
 var amon = require('amon').Amon,
@@ -17,7 +19,7 @@ app.start = function(){
 	this.httpServer = express();
 	this.auth = express.basicAuth(config.user, config.passphrase);
 	this.httpServer.use(express.bodyParser());
-	
+
 	//enable cross domain
 	this.httpServer.use(function(req, res, next) {
   		res.header("Access-Control-Allow-Origin", "*");
@@ -25,13 +27,20 @@ app.start = function(){
   		next();
  	});
 
-	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, {
-      cache: false,
-      auth: { 
-      	username: config.dbUser , 
-      	password: config.dbpassword 
-     }
-  	});
+
+
+	var settings = {
+		cache : false
+	};
+
+	if(config.dbUser){
+		settings.auth = { 
+      		username: config.dbUser , 
+      		password: config.dbpassword 
+     	};
+	}
+
+	this.db =  new(cradle.Connection)(config.dbUrl, config.dbPort, settings);
 
   	//select db
   	this.db = this.db.database(config.dBase);
@@ -85,7 +94,7 @@ app.start = function(){
 };
 
 app.load = function(){
-	app.methods = require(__dirname + "/methods");
+	app.methods = require(__dirname + '/methods');
 };
 
 app.validateRequest = function(action, path, request){
@@ -102,7 +111,7 @@ app.validateRequest = function(action, path, request){
 		if( val && api.fieldRules[rule](val) ){
 			passed++;
 		} else {
-			app.log("Warn value:'"+val+"' is not valid for rule:'"+rule+"'", 'warn');
+			app.log("Warn value:'"+ val+"' is not valid for rule:'"+rule+"'", 'warn');
 		} 
 	}
 	
@@ -142,7 +151,8 @@ app.bindApi = function(){
 };
 
 process.addListener('uncaughtException', function(err) {
-        amon.handle(err);
+	console.log(err);
+    amon.handle(err);
 });
 
 app.start();
