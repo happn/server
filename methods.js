@@ -134,7 +134,8 @@ module.exports = {
 var fetcher = {
 	run : function(){
 		var now = app.utils.getWeekDays(app.utils.nowString()),
-			next = new Date();
+			next = new Date(),
+			diff = 0;
 
 		app.log("Fetcher start", "info");
 		
@@ -143,6 +144,11 @@ var fetcher = {
 		});
 
 		next.setHours(7);
+
+		if( (next.getTime() - Date.now()) < 0){
+			next = new Date(next.getTime() + 1000 * 60 * 60 * 24);
+		}
+		app.log("Fetcher scheduled for " + next , "info");
 
 		setTimeout(function(){
 			fetcher.run();
