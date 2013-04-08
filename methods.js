@@ -36,6 +36,11 @@ module.exports = {
 				  			fs.unlink(path);
 
 				  			db.get(d._id, function(err, doc){
+				  				
+				  				if(!doc[file].picture.uploads){
+				  					doc[file].picture.uploads = [];
+				  				}
+
 								doc[file].picture.uploads.push({
 				  					user : user,
 				  					karma : 0,
