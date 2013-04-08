@@ -31,25 +31,25 @@ module.exports = {
 				  			name : fileName + file,
 				  			contentType : 'image/jpg',
 				  			body : img
-				  		}, function(err, doc){
+				  		}, function(err, data){
 				  			if(err) app.log(['[pictureUpload] Attachment Save Error', err], 'error');
 				  			fs.unlink(path);
 
-				  			doc[file].pictures.uploads.push({
-				  				user : user,
-				  				karma : 0,
-				  				file : fileName + file
-				  			});
+				  			db.get(d._id, function(err, doc){
+								doc[file].picture.uploads.push({
+				  					user : user,
+				  					karma : 0,
+				  					file : fileName + file
+				  				});
 
-				  			db.save(doc._id, doc._rev, doc);
+				  				db.save(doc._id, doc._rev, doc);
+				  			})
 				  		});
 
-
 				  	} else {
-				  		app.log("[pictureUpload] Image Exists", 'warn');
+				  		app.log("[pictureUpload] Date dont exists", 'warn');
 				  	}
 				  })
-
 
 				});
 			}
