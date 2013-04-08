@@ -66,7 +66,7 @@ module.exports ={
 							title : menu[2],
 							up_votes : [],
 							down_votes : [],
-							pictures : {
+							picture : {
 								uploads : [],
 								approved : null
 							}
@@ -76,7 +76,7 @@ module.exports ={
 							title : menu[1],
 							up_votes : [],
 							down_votes : [],
-							pictures : {
+							picture : {
 								uploads : [],
 								approved : null
 							}
@@ -135,13 +135,13 @@ module.exports ={
 						title : app.utils.parseHTML( doc.menu_a.title ),
 						up_votes : doc.menu_a.up_votes.length ,
 						down_votes : doc.menu_a.down_votes.length ,
-                        picture : that.getPicture(doc, "a")
+                        picture : that.getPicture(doc, "menu_a") != "" ? imagePath + that.getPicture(doc, "menu_a") : ""
 					},
 					menu_b : {
 						title : app.utils.parseHTML( doc.menu_b.title ),
 						up_votes : doc.menu_b.up_votes.length ,
 						down_votes : doc.menu_b.down_votes.length ,
-                        picture : that.getPicture(doc, "b")
+                        picture : that.getPicture(doc, "menu_b") != "" ? imagePath + that.getPicture(doc, "menu_b") : ""
 					},
 				};
 			}
@@ -151,11 +151,12 @@ module.exports ={
 	},
 
 	getPicture : function(doc, menu){
-		if(!doc._attachments || !doc[menu].approved){
+	
+		if(!doc._attachments || !doc[menu].picture.approved){
 			return "";
 		} 
 
-		return imagePath + doc[menu].approved;	
+		return  doc[menu].picture.approved;	
 	},
 
 	clean : function(data){
