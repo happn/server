@@ -36,7 +36,10 @@ module.exports = {
 				  			fs.unlink(path);
 
 				  			db.get(d._id, function(err, doc){
-				  				
+				  				if(!doc[file].picture.uploads){
+				  					doc[file].picture = { uploads : [], approved : null};
+				  				}
+
 				  				if(!doc[file].picture.uploads){
 				  					doc[file].picture.uploads = [];
 				  				}
