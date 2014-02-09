@@ -43,11 +43,11 @@ var utils = {
     },
 
     twoDigits : function(d){
-        return (d.toString()).length === 1 ? "0" + d : d;
+        return (d.toString()).length === 1 ? "0" + d : d.toString();
     },
 
     eightDigits: function(d){
-        return (d.toString()).length === 7 ? "0" + d : d;
+        return (d.toString()).length === 7 ? "0" + d : d.toString();
     },
 
     getMaxDays :  function(month, year) {
@@ -95,6 +95,7 @@ var utils = {
     },
     nowString : function(){
         var n = new Date();
+	console.log(this.twoDigits(n.getDate()) + this.twoDigits( n.getMonth() +1) +  n.getFullYear());
         return  this.twoDigits(n.getDate())+ this.twoDigits(n.getMonth()+1) + n.getFullYear();
     }
 
