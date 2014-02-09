@@ -56,7 +56,12 @@ module.exports ={
 					nodeDate = parseFloat(lastData[0].split(',')[1].split('.').join(''));
 					nodeDate = app.utils.eightDigits(nodeDate);
 					menu = lastData[1].split('*');
-			
+			                
+                                        console.log(menu[2]);
+					
+					if(menu[2] === "undefined" || menu[2] == null || menu[2] === 'null'){
+						return;
+					}
 
 					additive = menu[2].split('Kennzeichnung')[1];
 					menu[2] = menu[2].replace('Kennzeichnung' + additive, '');
