@@ -13,8 +13,8 @@
     "cradle": "~0.6.4",
     "sax": "*",
     "iconv": "*",
-    "amon" : "*",
-    "mongodb" : ""
+    "async": "*",
+    "request": "~2.33.0"
   },
   "engines": {
     "node": ">=0.8"
