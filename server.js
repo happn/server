@@ -2,8 +2,7 @@ process.title = "HappnServer";
 
 app = {};
 
-var amon = require('amon').Amon,
-	express = require("express"),
+var express = require("express"),
   	cradle = require('cradle')
    	http = require('http'),
 	utils = require(__dirname + "/utils"),
@@ -27,8 +26,6 @@ app.start = function(){
   		next();
  	});
 
-
-
 	var settings = {
 		cache : false
 	};
@@ -51,13 +48,37 @@ app.start = function(){
   		
 
   	api.routes = {
-		'/v1/vote/:date' : ["post", app.methods.vote],
-		'/v1/day/:date' : ["get", app.methods.showDay],
-		'/v1/week/:date' : ["get", app.methods.showWeek],
-		'/v1/picture' :['put', app.methods.pictureUpload]
+		'/v2/like/:mid' : ["post", app.methods_v2.like],
+		'/v2/unlike/:mid' : ["post", app.methods_v2.unlike],
+		'/v2/week/:mensa_id/:date' : ["get", app.methods_v2.week],
+		'/v2/post/:mid' : ["post", app.methods_v2.post],
+
+		'/v1/vote/:date' : ["post", app.methods_v1.vote],
+		'/v1/day/:date' : ["get", app.methods_v1.showDay],
+		'/v1/week/:date' : ["get", app.methods_v1.showWeek],
+		'/v1/picture' :['put', app.methods_v1.pictureUpload]
 	};
 
 	api.fields = {
+		'/v2/like/:mid' : {
+			mid : 'params.mid',
+		},
+
+		'/v2/unlike/:mid' : {
+			mid : 'params.mid',
+		},
+
+		'/v2/week/:mensa_id/:date' : {
+			date : 'params.date',
+			mensa_id : 'params.mensa_id'
+		},
+
+		'/v2/post/:mid' : {
+			mid : 'params.mid'
+		},
+
+		/* v1 api */
+
 		'/v1/vote/:date' : {
 			date : 'params.date',
 			user : 'body.user',
@@ -77,6 +98,16 @@ app.start = function(){
 			return !/(\.|\:|\/)/g.test(s) && s.length === 8;
 		},
 
+		mensa_id : function(s){
+			return true;
+		},
+
+		mid : function(s){
+			return true;
+		},
+
+		/* v1 - api */
+
 		user : function(n){
 			return true;
 		},
@@ -94,7 +125,8 @@ app.start = function(){
 };
 
 app.load = function(){
-	app.methods = require(__dirname + '/methods');
+	app.methods_v2 = require(__dirname + '/methods');
+	app.methods_v1 = require(__dirname + '/methods.v1');
 };
 
 app.validateRequest = function(action, path, request){
@@ -132,11 +164,16 @@ app.bindApi = function(){
 		var action = api.routes[path];
 		
 		(function(action , path, server){
-			server[action[0]](path, /*that.auth,*/ function(request, response){
+			server[action[0]](path, function(request, response){
 				app.log(action[0] + ":" + path, 'info');
+				var is_v2 = path.indexOf('v2'); 
 
 				var r = new RestRequest(request, response),
 					isValidRequest = app.validateRequest(action, path, r);
+
+				if(is_v2){
+					r.options.version = 2;
+				}
 				
 				if( isValidRequest ){
 					r.setHeaders();
@@ -152,7 +189,6 @@ app.bindApi = function(){
 
 process.addListener('uncaughtException', function(err) {
 	console.log(err);
-    amon.handle(err);
 });
 
 app.start();
