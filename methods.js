@@ -49,6 +49,8 @@ module.exports = {
 
 			db.save(ids.doc, doc);
 		});
+
+		request.end();
 	},
 
 	// [POST] v2/unlike/mid/
@@ -66,6 +68,8 @@ module.exports = {
 
 			db.save(ids.doc, doc);
 		});
+
+		request.end();
 	},
 
 	// [POST] v2/post/mid
@@ -78,5 +82,7 @@ module.exports = {
 			menu.pictures.push(heythere_post_id);
 			db.save(ids.doc, doc);
 		});
+
+		request.end();
 	}
 };
